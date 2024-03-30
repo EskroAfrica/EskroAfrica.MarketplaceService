@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34701.34
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EskroAfrica.MarketplaceService.API", "EskroAfrica.MarketplaceService.API\EskroAfrica.MarketplaceService.API.csproj", "{3EC754CE-76F0-4D3B-9FD4-8DE8604B889F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EskroAfrica.MarketplaceService.Domain", "EskroAfrica.MarketplaceService.Domain\EskroAfrica.MarketplaceService.Domain.csproj", "{6445B093-72DF-4EDC-95D0-E655B12C99BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EskroAfrica.MarketplaceService.Application", "EskroAfrica.MarketplaceService.Application\EskroAfrica.MarketplaceService.Application.csproj", "{EBEB85DE-15F7-4C8F-8965-FF44793B850B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EskroAfrica.MarketplaceService.Common", "EskroAfrica.MarketplaceService.Common\EskroAfrica.MarketplaceService.Common.csproj", "{BC11783C-0798-4A0B-92DA-F15603B2038B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EskroAfrica.MarketplaceService.Infrastructure", "EskroAfrica.MarketplaceService.Infrastructure\EskroAfrica.MarketplaceService.Infrastructure.csproj", "{BAB9F177-7903-459A-B118-ACE1E7776360}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3EC754CE-76F0-4D3B-9FD4-8DE8604B889F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EC754CE-76F0-4D3B-9FD4-8DE8604B889F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EC754CE-76F0-4D3B-9FD4-8DE8604B889F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EC754CE-76F0-4D3B-9FD4-8DE8604B889F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6445B093-72DF-4EDC-95D0-E655B12C99BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6445B093-72DF-4EDC-95D0-E655B12C99BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6445B093-72DF-4EDC-95D0-E655B12C99BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6445B093-72DF-4EDC-95D0-E655B12C99BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBEB85DE-15F7-4C8F-8965-FF44793B850B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBEB85DE-15F7-4C8F-8965-FF44793B850B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBEB85DE-15F7-4C8F-8965-FF44793B850B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBEB85DE-15F7-4C8F-8965-FF44793B850B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC11783C-0798-4A0B-92DA-F15603B2038B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC11783C-0798-4A0B-92DA-F15603B2038B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC11783C-0798-4A0B-92DA-F15603B2038B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC11783C-0798-4A0B-92DA-F15603B2038B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAB9F177-7903-459A-B118-ACE1E7776360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAB9F177-7903-459A-B118-ACE1E7776360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAB9F177-7903-459A-B118-ACE1E7776360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAB9F177-7903-459A-B118-ACE1E7776360}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9BD89E40-81E2-4BF5-A86F-EEF562BA521E}
+	EndGlobalSection
+EndGlobal

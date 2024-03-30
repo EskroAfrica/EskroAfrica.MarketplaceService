@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EskroAfrica.MarketplaceService.Application\EskroAfrica.MarketplaceService.Application.csproj" />
+    <ProjectReference Include="..\EskroAfrica.MarketplaceService.Common\EskroAfrica.MarketplaceService.Common.csproj" />
+    <ProjectReference Include="..\EskroAfrica.MarketplaceService.Domain\EskroAfrica.MarketplaceService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
