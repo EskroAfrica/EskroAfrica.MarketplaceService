@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EskroAfrica.MarketplaceService.Common.DTOs.Response;
 using EskroAfrica.MarketplaceService.Domain.Entities;
 
 namespace EskroAfrica.MarketplaceService.Application
@@ -7,6 +8,7 @@ namespace EskroAfrica.MarketplaceService.Application
     {
         public MappingProfile()
         {
+            CreateMap<Product, ProductResponse>();
         }
     }
 }

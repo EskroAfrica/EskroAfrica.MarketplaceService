@@ -34,4 +34,21 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Response
             };
         }
     }
+
+    public class PaginatedApiResponse<T> : ApiResponse<T>
+    {
+        public int TotalCount { get; set; }
+
+        public static PaginatedApiResponse<T> Response(T data, string message, ApiResponseCode responseCode, int total = 0, string userMessage = null)
+        {
+            return new PaginatedApiResponse<T>
+            {
+                Message = message,
+                UserMessage = userMessage ?? message,
+                ResponseCode = responseCode,
+                Data = data,
+                TotalCount = total
+            };
+        }
+    }
 }
