@@ -23,7 +23,7 @@ namespace EskroAfrica.MarketplaceService.Infrastructure.Implementations
             _entityDbSet.Add(entity);
         }
 
-        public async Task<T> GetAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, object>>[] includes = null)
+        public async Task<T> GetAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _entityDbSet.AsQueryable();
 
@@ -35,7 +35,7 @@ namespace EskroAfrica.MarketplaceService.Infrastructure.Implementations
             return await query.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, Expression<Func<T, object>>[] includes = null)
+        public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includes)
         {
             IQueryable<T> query = _entityDbSet.AsQueryable();
 

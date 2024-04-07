@@ -28,4 +28,17 @@
         Processing,
         Completed
     }
+
+    public enum PickupMethod
+    {
+        SelfPickup,
+        EskroDelivery
+    }
+
+    public enum OrderStatus
+    {
+        Pending,
+        PickedUp,
+        Canceled
+    }
 }

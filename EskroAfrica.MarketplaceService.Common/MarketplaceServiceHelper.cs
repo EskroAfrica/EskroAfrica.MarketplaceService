@@ -1,4 +1,7 @@
-﻿namespace EskroAfrica.MarketplaceService.Common
+﻿using Serilog;
+using Serilog.Events;
+
+namespace EskroAfrica.MarketplaceService.Common
 {
     public class MarketplaceServiceHelper
     {

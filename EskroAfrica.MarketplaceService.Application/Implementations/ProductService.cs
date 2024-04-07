@@ -17,6 +17,8 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
         // get products for timeline
         // get user's products
         // get single product
+        // add product
+        // remove product from market
 
         public ProductService(IUnitOfWork unitOfWork, IJwtTokenService jwtTokenService, IMapper mapper)
         {
@@ -54,6 +56,20 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 
             var response = _mapper.Map<ProductResponse>(product);
             return ApiResponse<ProductResponse>.Response(response, "Successful", ApiResponseCode.Ok);
+        }
+
+        public async Task<ApiResponse> AddProduct(ProductRequest request)
+        {
+            var product = _mapper.Map<Product>(request);
+            product.SellerId = Guid.Parse(_jwtTokenService.IdentityUserId);
+            product.Status = ProductStatus.Available;
+
+            _unitOfWork.Repository<Product>().Add(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            // notify customer
+
+            return ApiResponse.Response("Successful", ApiResponseCode.Ok);
         }
     }
 }
