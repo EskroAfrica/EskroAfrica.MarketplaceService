@@ -6,9 +6,7 @@ namespace EskroAfrica.MarketplaceService.Domain.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Quantity { get; set; }
         public decimal Price { get; set; }
-        public bool SellAsUnit { get; set; }
         public Guid SellerId { get; set; }
         public ProductCondition Condition { get; set; }
         public string State { get; set; }

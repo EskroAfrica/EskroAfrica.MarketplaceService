@@ -41,6 +41,9 @@ namespace EskroAfrica.MarketplaceService.API
             // Add Automapper
             services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 
+            // Add HttpCLientFactory
+            services.AddHttpClient();
+
             // Add Services
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IDeliveryService, DeliveryService>();

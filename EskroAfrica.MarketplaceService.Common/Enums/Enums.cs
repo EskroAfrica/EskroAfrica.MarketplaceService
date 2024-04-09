@@ -24,9 +24,11 @@
 
     public enum DeliveryStatus
     {
+        QuoteGenerated,
         Pending,
         Processing,
-        Completed
+        Completed,
+        Canceled
     }
 
     public enum PickupMethod
@@ -37,8 +39,8 @@
 
     public enum OrderStatus
     {
-        Pending,
-        PickedUp,
+        Initiated,
+        Completed,
         Canceled
     }
 }

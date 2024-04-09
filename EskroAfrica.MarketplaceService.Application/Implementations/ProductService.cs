@@ -29,6 +29,8 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 
         public async Task<PaginatedApiResponse<ProductResponse>> GetProductList(ProductRequestInput input)
         {
+            var apiResponse = new PaginatedApiResponse<ProductResponse>();
+
             // get products
             var products = await _unitOfWork.Repository<Product>().GetAllAsync(x =>
                 input.CategoryId.HasValue ? x.CategoryId == input.CategoryId : true
@@ -46,20 +48,24 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             var mappedItems = _mapper.Map<ProductResponse>(pageItems);
 
             // return
-            return PaginatedApiResponse<ProductResponse>.Response(mappedItems, "Successful", ApiResponseCode.Ok, total);
+            return apiResponse.Success(mappedItems, "Successful", ApiResponseCode.Ok, total);
         }
 
         public async Task<ApiResponse<ProductResponse>> GetProduct(Guid id)
         {
+            var apiResponse = new ApiResponse<ProductResponse>();
+
             var product = await _unitOfWork.Repository<Product>().GetAsync(x => x.Id == id);
-            if (product == null) return ApiResponse<ProductResponse>.Response(null, "Product not found", ApiResponseCode.BadRequest);
+            if (product == null) return apiResponse.Failure("Product not found");
 
             var response = _mapper.Map<ProductResponse>(product);
-            return ApiResponse<ProductResponse>.Response(response, "Successful", ApiResponseCode.Ok);
+            return apiResponse.Success(response, "Successful");
         }
 
         public async Task<ApiResponse> AddProduct(ProductRequest request)
         {
+            var apiResponse = new ApiResponse();
+
             var product = _mapper.Map<Product>(request);
             product.SellerId = Guid.Parse(_jwtTokenService.IdentityUserId);
             product.Status = ProductStatus.Available;
@@ -69,7 +75,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 
             // notify customer
 
-            return ApiResponse.Response("Successful", ApiResponseCode.Ok);
+            return apiResponse.Success("Successful");
         }
     }
 }

@@ -4,6 +4,8 @@
     {
         public IdentitySettings IdentitySettings { get; set; }
         public LogSettings LogSettings { get; set; }
+        public PaystackSettings PaystackSettings { get; set; }
+        public EscrowSettings EscrowSettings { get; set; }
     }
 
     public class IdentitySettings
@@ -18,5 +20,16 @@
         public bool UseSeq { get; set; }
         public string LogUrl { get; set; }
         public string LogRef { get; set; } = Guid.NewGuid().ToString();
+    }
+
+    public class PaystackSettings
+    {
+        public string BaseUrl { get; set; }
+        public string SecretKey { get; set; }
+    }
+
+    public class EscrowSettings
+    {
+        public decimal ProcessingFeePercentage { get; set; }
     }
 }

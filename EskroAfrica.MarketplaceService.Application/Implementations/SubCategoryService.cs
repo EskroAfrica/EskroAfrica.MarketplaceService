@@ -20,18 +20,22 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 
         public async Task<ApiResponse> AddSubCategory(SubCategoryRequest request)
         {
+            var apiResponse = new ApiResponse();
+
             var sub = _mapper.Map<SubCategory>(request);
             _unitOfWork.Repository<SubCategory>().Add(sub);
 
             await _unitOfWork.SaveChangesAsync();
-            return ApiResponse.Response("Successful", ApiResponseCode.Ok);
+            return apiResponse.Success("Successful");
         }
 
         public async Task<ApiResponse<List<SubCategoryResponse>>> GetSubCategories(CategoryRequestInput input)
         {
+            var apiResponse = new ApiResponse<List<SubCategoryResponse>>();
+
             var subs = (await _unitOfWork.Repository<SubCategory>().GetAllAsync(c =>
                 !string.IsNullOrEmpty(input.SearchTerm) ? c.Name.Contains(input.SearchTerm) : true)).ToList();
-            return ApiResponse<List<SubCategoryResponse>>.Response(_mapper.Map<List<SubCategoryResponse>>(subs), "Successful", ApiResponseCode.Ok);
+            return apiResponse.Success(_mapper.Map<List<SubCategoryResponse>>(subs), "Successful", ApiResponseCode.Ok);
         }
     }
 }

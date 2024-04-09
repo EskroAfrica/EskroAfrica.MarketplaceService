@@ -8,6 +8,7 @@ namespace EskroAfrica.MarketplaceService.Domain.Entities
         public Guid IdentityUserId { get; set; }
         public PickupMethod PickupMethod { get; set; }
         public OrderStatus OrderStatus { get; set; }
+        public decimal Amount { get; set; }
 
         public Delivery Delivery { get; set; }
     }

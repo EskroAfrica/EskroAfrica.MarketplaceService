@@ -8,14 +8,22 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Response
         public string UserMessage { get; set; }
         public ApiResponseCode ResponseCode { get; set; }
 
-        public static ApiResponse Response(string message, ApiResponseCode responseCode, string userMessage = null)
+        public ApiResponse Success(string message, ApiResponseCode responseCode = ApiResponseCode.Ok, string userMessage = null)
         {
-            return new ApiResponse
-            {
-                Message = message,
-                UserMessage = userMessage ?? message,
-                ResponseCode = responseCode
-            };
+            Message = message;
+            UserMessage = userMessage ?? message;
+            ResponseCode = responseCode;
+
+            return this;
+        }
+
+        public ApiResponse Failure(string message, ApiResponseCode responseCode = ApiResponseCode.BadRequest, string userMessage = null)
+        {
+            Message = message;
+            UserMessage = userMessage ?? message;
+            ResponseCode = responseCode;
+
+            return this;
         }
     }
 
@@ -23,15 +31,23 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Response
     {
         public T Data { get; set; }
 
-        public static ApiResponse<T> Response(T data, string message, ApiResponseCode responseCode, string userMessage = null)
+        public ApiResponse<T> Success(T data, string message, ApiResponseCode responseCode = ApiResponseCode.Ok, string userMessage = null)
         {
-            return new ApiResponse<T>
-            {
-                Message = message,
-                UserMessage = userMessage ?? message,
-                ResponseCode = responseCode,
-                Data = data
-            };
+            Message = message;
+            UserMessage = userMessage ?? message;
+            ResponseCode = responseCode;
+            Data = data;
+
+            return this;
+        }
+
+        public ApiResponse<T> Failure(string message, ApiResponseCode responseCode = ApiResponseCode.BadRequest, string userMessage = null)
+        {
+            Message = message;
+            UserMessage = userMessage ?? message;
+            ResponseCode = responseCode;
+
+            return this;
         }
     }
 
@@ -39,16 +55,24 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Response
     {
         public int TotalCount { get; set; }
 
-        public static PaginatedApiResponse<T> Response(T data, string message, ApiResponseCode responseCode, int total = 0, string userMessage = null)
+        public PaginatedApiResponse<T> Success(T data, string message, ApiResponseCode responseCode = ApiResponseCode.Ok, int total = 0, string userMessage = null)
         {
-            return new PaginatedApiResponse<T>
-            {
-                Message = message,
-                UserMessage = userMessage ?? message,
-                ResponseCode = responseCode,
-                Data = data,
-                TotalCount = total
-            };
+            Message = message;
+            UserMessage = userMessage ?? message;
+            ResponseCode = responseCode;
+            Data = data;
+            TotalCount = total;
+
+            return this;
+        }
+
+        public PaginatedApiResponse<T> Failure(string message, ApiResponseCode responseCode = ApiResponseCode.BadRequest, string userMessage = null)
+        {
+            Message = message;
+            UserMessage = userMessage ?? message;
+            ResponseCode = responseCode;
+
+            return this;
         }
     }
 }
