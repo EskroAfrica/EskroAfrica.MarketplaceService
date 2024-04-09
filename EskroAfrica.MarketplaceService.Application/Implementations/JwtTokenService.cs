@@ -6,9 +6,9 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 {
     public class JwtTokenService : IJwtTokenService
     {
-        private readonly HttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public JwtTokenService(HttpContextAccessor httpContextAccessor)
+        public JwtTokenService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

@@ -1,6 +1,9 @@
 ﻿using EskroAfrica.MarketplaceService.Application;
+using EskroAfrica.MarketplaceService.Application.Implementations;
+using EskroAfrica.MarketplaceService.Application.Interfaces;
 using EskroAfrica.MarketplaceService.Common.Models;
 using EskroAfrica.MarketplaceService.Infrastructure.Data;
+using EskroAfrica.MarketplaceService.Infrastructure.Implementations;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -37,6 +40,18 @@ namespace EskroAfrica.MarketplaceService.API
 
             // Add Automapper
             services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+
+            // Add Services
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IDeliveryService, DeliveryService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ISubCategoryService, SubCategoryService>();
+            services.AddScoped<IOrderService, OrderService>();
+
+            services.AddScoped<ILogService, LogService>();
+            services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }
 }

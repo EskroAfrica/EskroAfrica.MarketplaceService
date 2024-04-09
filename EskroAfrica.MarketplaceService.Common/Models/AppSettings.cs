@@ -17,5 +17,6 @@
     {
         public bool UseSeq { get; set; }
         public string LogUrl { get; set; }
+        public string LogRef { get; set; } = Guid.NewGuid().ToString();
     }
 }
