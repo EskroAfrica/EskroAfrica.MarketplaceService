@@ -51,6 +51,8 @@ namespace EskroAfrica.MarketplaceService.API
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<IOrderService, OrderService>();
 
+            services.AddScoped<IHttpClientService, HttpClientService>();
+            services.AddScoped<IPaystackService, PaystackService>();
             services.AddScoped<ILogService, LogService>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
