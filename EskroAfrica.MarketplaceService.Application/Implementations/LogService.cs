@@ -7,16 +7,11 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 {
     public class LogService : ILogService
     {
-        private readonly AppSettings _appSettings;
-
-        public LogService(AppSettings appSettings)
-        {
-            _appSettings = appSettings;
-        }
+        private readonly string _logRef = Guid.NewGuid().ToString();
 
         public void LogEvent(LogEventLevel level, string message, params object?[]? propertyValues)
         {
-            message = $"{_appSettings.LogSettings.LogRef}: {message}";
+            message = $"{_logRef}: {message}";
             Log.Write(level, message, propertyValues);
         }
     }

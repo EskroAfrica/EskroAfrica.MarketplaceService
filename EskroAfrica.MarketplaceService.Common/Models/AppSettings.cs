@@ -1,4 +1,6 @@
-﻿namespace EskroAfrica.MarketplaceService.Common.Models
+﻿using Confluent.Kafka;
+
+namespace EskroAfrica.MarketplaceService.Common.Models
 {
     public class AppSettings
     {
@@ -6,6 +8,7 @@
         public LogSettings LogSettings { get; set; }
         public PaystackSettings PaystackSettings { get; set; }
         public EscrowSettings EscrowSettings { get; set; }
+        public KafkaSettings KafkaSettings { get; set; }
     }
 
     public class IdentitySettings
@@ -31,5 +34,12 @@
     public class EscrowSettings
     {
         public decimal ProcessingFeePercentage { get; set; }
+    }
+
+    public class KafkaSettings
+    {
+        public ProducerConfig ProducerConfig { get; set; }
+        public ConsumerConfig ConsumerConfig { get; set; }
+        public string CreateEscrowTopic { get; set; }
     }
 }

@@ -11,13 +11,11 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
     {
         private readonly IProductService _productService;
         private readonly IJwtTokenService _jwtTokenService;
-        private readonly ILogService _logService;
 
-        public ProductsController(IProductService productService, IJwtTokenService jwtTokenService, ILogService logService)
+        public ProductsController(IProductService productService, IJwtTokenService jwtTokenService)
         {
             _productService = productService;
             _jwtTokenService = jwtTokenService;
-            _logService = logService;
         }
 
         [HttpGet]
@@ -35,15 +33,7 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
             return CustomResponse(response);
         }
 
-        [HttpGet("/test")]
-        [AllowAnonymous]
-        public async Task<IActionResult> test()
-        {
-            var obj = new { name = "emeka", age = 12 };
-            int count = 2;
-
-            _logService.LogEvent(Serilog.Events.LogEventLevel.Information, "logging {@obj} for the {count} time", obj, count);
-            return Ok(obj);
-        }
+        // add product
+        // mark product unavailable
     }
 }

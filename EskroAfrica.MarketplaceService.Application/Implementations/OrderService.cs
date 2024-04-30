@@ -14,13 +14,16 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
         private readonly AppSettings _appSettings;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IPaystackService _paystackService;
+        private readonly IKafkaProducerService _kafkaProducerService;
 
-        public OrderService(IUnitOfWork unitOfWork, AppSettings appSettings, IJwtTokenService jwtTokenService, IPaystackService paystackService)
+        public OrderService(IUnitOfWork unitOfWork, AppSettings appSettings, IJwtTokenService jwtTokenService, IPaystackService paystackService,
+            IKafkaProducerService kafkaProducerService)
         {
             _unitOfWork = unitOfWork;
             _appSettings = appSettings;
             _jwtTokenService = jwtTokenService;
             _paystackService = paystackService;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<ApiResponse<InitiateOrderResponse>> InitiateOrder(InitiateOrderRequest request)
@@ -132,6 +135,15 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             }
 
             // send kafka message to escrow service
+            var escrow = new EscrowRequestDto
+            {
+                Name = product.Name,
+                PayerIdentityUserId = Guid.Parse(_jwtTokenService.IdentityUserId),
+                ReceiverIdentityUserId = product.SellerId,
+                ProductId = product.Id,
+                PaymentId = payment.Id
+            };
+            await _kafkaProducerService.ProduceAsync(_appSettings.KafkaSettings.CreateEscrowTopic, escrow);
 
             // return
             return apiResponse.Success("Successfully completed order");

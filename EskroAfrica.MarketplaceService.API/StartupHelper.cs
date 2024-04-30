@@ -44,6 +44,10 @@ namespace EskroAfrica.MarketplaceService.API
             // Add HttpCLientFactory
             services.AddHttpClient();
 
+            // Add Kafka
+            services.AddScoped<IKafkaProducerService, KafkaProducerService>();
+            //services.AddHostedService<KafkaConsumerService>();
+
             // Add Services
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IDeliveryService, DeliveryService>();
