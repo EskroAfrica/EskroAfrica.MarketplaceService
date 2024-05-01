@@ -1,5 +1,7 @@
 using EskroAfrica.MarketplaceService.API;
+using EskroAfrica.MarketplaceService.Infrastructure.Data;
 using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 /*
  - add serilog
@@ -35,6 +37,14 @@ try
     // Configure the HTTP request pipeline.
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<MarketplaceServiceDbContext>();
+        dbContext.Database.Migrate();
+        await Seeder.SeedAsync(dbContext);
+    }
+
 
     app.UseHttpsRedirection();
 

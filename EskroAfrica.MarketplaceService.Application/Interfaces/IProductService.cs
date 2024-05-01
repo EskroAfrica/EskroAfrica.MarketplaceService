@@ -6,6 +6,6 @@ namespace EskroAfrica.MarketplaceService.Application.Interfaces
     public interface IProductService
     {
         Task<ApiResponse<ProductResponse>> GetProduct(Guid id);
-        Task<PaginatedApiResponse<ProductResponse>> GetProductList(ProductRequestInput input);
+        Task<PaginatedApiResponse<List<ProductResponse>>> GetProductList(ProductRequestInput input);
     }
 }

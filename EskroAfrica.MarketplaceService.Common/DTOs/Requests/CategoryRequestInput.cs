@@ -8,6 +8,6 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Requests
 {
     public class CategoryRequestInput
     {
-        public string SearchTerm { get; set; }
+        public string? SearchTerm { get; set; }
     }
 }

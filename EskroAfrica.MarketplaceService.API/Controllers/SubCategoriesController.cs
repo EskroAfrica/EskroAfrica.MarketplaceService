@@ -1,6 +1,7 @@
 ﻿using EskroAfrica.MarketplaceService.Application.Implementations;
 using EskroAfrica.MarketplaceService.Application.Interfaces;
 using EskroAfrica.MarketplaceService.Common.DTOs.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
             => CustomResponse(await _subCategoryService.AddSubCategory(request));
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSubCategories([FromQuery] CategoryRequestInput input)
             => CustomResponse(await _subCategoryService.GetSubCategories(input));
     }

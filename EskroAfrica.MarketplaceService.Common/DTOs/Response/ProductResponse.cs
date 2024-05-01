@@ -8,7 +8,6 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Response
         public DateTime CreatedDate { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Quantity { get; set; }
         public decimal Price { get; set; }
         public ProductCondition Condition { get; set; }
         public string State { get; set; }

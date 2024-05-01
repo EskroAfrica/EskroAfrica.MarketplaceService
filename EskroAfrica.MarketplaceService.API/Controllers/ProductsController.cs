@@ -19,10 +19,12 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductList([FromQuery] ProductRequestInput input)
             => CustomResponse(await _productService.GetProductList(input));
 
         [HttpGet("/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProduct(Guid id)
             => CustomResponse(await _productService.GetProduct(id));
 

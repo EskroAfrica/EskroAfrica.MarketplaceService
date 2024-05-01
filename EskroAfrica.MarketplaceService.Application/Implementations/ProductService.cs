@@ -27,25 +27,25 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             _mapper = mapper;
         }
 
-        public async Task<PaginatedApiResponse<ProductResponse>> GetProductList(ProductRequestInput input)
+        public async Task<PaginatedApiResponse<List<ProductResponse>>> GetProductList(ProductRequestInput input)
         {
-            var apiResponse = new PaginatedApiResponse<ProductResponse>();
+            var apiResponse = new PaginatedApiResponse<List<ProductResponse>>();
 
             // get products
             var products = await _unitOfWork.Repository<Product>().GetAllAsync(x =>
                 input.CategoryId.HasValue ? x.CategoryId == input.CategoryId : true
                 && input.SubCategoryId.HasValue ? x.SubCategoryId == input.SubCategoryId : true
                 && input.SellerId.HasValue ? x.SellerId == input.SellerId : true
-                && !string.IsNullOrEmpty(input.State) ? x.State.Contains(input.State, StringComparison.OrdinalIgnoreCase) : true
-                && !string.IsNullOrEmpty(input.City) ? x.City.Contains(input.City, StringComparison.OrdinalIgnoreCase) : true
-                && !string.IsNullOrEmpty(input.SearchTerm) ? x.Name.Contains(input.SearchTerm, StringComparison.OrdinalIgnoreCase) : true);
+                && !string.IsNullOrEmpty(input.State) ? x.State.Contains(input.State) : true
+                && !string.IsNullOrEmpty(input.City) ? x.City.Contains(input.City) : true
+                && !string.IsNullOrEmpty(input.SearchTerm) ? x.Name.Contains(input.SearchTerm) : true);
 
             // paginate
             var pageItems = MarketplaceServiceHelper.Paginate(products, input.PageNumber, input.PageSize);
             int total = products.Count();
 
             // map
-            var mappedItems = _mapper.Map<ProductResponse>(pageItems);
+            var mappedItems = _mapper.Map<List<ProductResponse>>(pageItems);
 
             // return
             return apiResponse.Success(mappedItems, "Successful", ApiResponseCode.Ok, total);
