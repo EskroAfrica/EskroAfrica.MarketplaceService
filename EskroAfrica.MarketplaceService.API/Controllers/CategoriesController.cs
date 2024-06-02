@@ -19,11 +19,15 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> AddCategory([FromBody] CategoryRequest request)
             => CustomResponse(await _categoryService.AddCategory(request));
 
         [HttpGet]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(ApiResponse<List<CategoryResponse>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetCategories([FromQuery] CategoryRequestInput input)
             => CustomResponse(await _categoryService.GetCategories(input));
     }

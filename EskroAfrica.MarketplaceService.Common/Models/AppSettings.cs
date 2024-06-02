@@ -14,6 +14,7 @@ namespace EskroAfrica.MarketplaceService.Common.Models
     public class IdentitySettings
     {
         public string Authority { get; set; }
+        public string Audience { get; set; }
         public bool ValidateIssuer { get; set; }
         public bool ValidateAudience { get; set; }
     }

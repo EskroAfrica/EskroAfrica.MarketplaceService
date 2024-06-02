@@ -73,7 +73,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             _unitOfWork.Repository<Product>().Add(product);
             await _unitOfWork.SaveChangesAsync();
 
-            // notify customer
+            // notify user
 
             return apiResponse.Success("Successful");
         }

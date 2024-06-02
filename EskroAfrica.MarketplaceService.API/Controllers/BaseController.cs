@@ -7,7 +7,7 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Policy = "CanAccessApp")]
     public class BaseController : ControllerBase
     {
         protected IActionResult CustomResponse(ApiResponse response)

@@ -1,6 +1,7 @@
 ﻿using EskroAfrica.MarketplaceService.Application.Interfaces;
 using EskroAfrica.MarketplaceService.Common;
 using EskroAfrica.MarketplaceService.Common.DTOs.Requests;
+using EskroAfrica.MarketplaceService.Common.DTOs.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -19,16 +20,22 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        //[AllowAnonymous]
+        [ProducesResponseType(typeof(PaginatedApiResponse<List<ProductResponse>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetProductList([FromQuery] ProductRequestInput input)
             => CustomResponse(await _productService.GetProductList(input));
 
         [HttpGet("/{id}")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(ApiResponse<ProductResponse>), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetProduct(Guid id)
             => CustomResponse(await _productService.GetProduct(id));
 
         [HttpGet("/personal")]
+        [ProducesResponseType(typeof(PaginatedApiResponse<List<ProductResponse>>), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetUserProducts()
         {
             var response = await _productService.GetProductList(new ProductRequestInput { SellerId = Guid.Parse(_jwtTokenService.IdentityUserId) });

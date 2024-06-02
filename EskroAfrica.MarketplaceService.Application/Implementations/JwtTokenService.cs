@@ -24,7 +24,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
         private string GetClaim(string claimType)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims;
-            return claims?.FirstOrDefault(c => c.Type == claimType).Value;
+            return claims?.FirstOrDefault(c => c.Type == claimType)?.Value;
         }
     }
 }

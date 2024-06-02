@@ -50,6 +50,7 @@ try
 
     app.UseHangfireDashboard();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers().RequireAuthorization();

@@ -1,4 +1,5 @@
 ﻿using EskroAfrica.MarketplaceService.Application;
+using EskroAfrica.MarketplaceService.Application.Identity;
 using EskroAfrica.MarketplaceService.Application.Implementations;
 using EskroAfrica.MarketplaceService.Application.Interfaces;
 using EskroAfrica.MarketplaceService.Common.Models;
@@ -7,6 +8,7 @@ using EskroAfrica.MarketplaceService.Infrastructure.Implementations;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.Reflection;
 
 namespace EskroAfrica.MarketplaceService.API
@@ -26,13 +28,24 @@ namespace EskroAfrica.MarketplaceService.API
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
 
             // Add Authentication
+            JsonWebTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication()
                 .AddJwtBearer(options =>
                 {
                     options.Authority = appSettings.IdentitySettings.Authority;
+                    options.Audience = appSettings.IdentitySettings.Audience;
+                    options.TokenValidationParameters.ValidateIssuer = appSettings.IdentitySettings.ValidateIssuer;
                     options.TokenValidationParameters.ValidateAudience = appSettings.IdentitySettings.ValidateAudience;
+                    options.TokenValidationParameters.NameClaimType = "given_name";
+                    options.TokenValidationParameters.RoleClaimType = "role";
+                    options.TokenValidationParameters.ValidTypes = new[] {"at+jwt"};
                 });
-            services.AddAuthorization();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CanAccessApp", AuthorizationPolicies.CanAccessApp());
+                options.AddPolicy("CanAccessBackOffice", AuthorizationPolicies.CanAccessBackOffice());
+            });
 
             // Add Hangfire
             services.AddHangfire(options => options.UseSqlServerStorage(config.GetConnectionString("DefaultConnection")));
