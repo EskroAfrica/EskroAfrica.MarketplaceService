@@ -4,6 +4,6 @@
     {
         public Guid ProductId { get; set; }
         public bool DeliveryRequired { get; set; }
-        public Guid? DeliveryId { get; set; }
+        public DeliveryRequest DeliveryRequest { get; set; }
     }
 }

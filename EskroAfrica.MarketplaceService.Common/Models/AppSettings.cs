@@ -9,6 +9,7 @@ namespace EskroAfrica.MarketplaceService.Common.Models
         public PaystackSettings PaystackSettings { get; set; }
         public EscrowSettings EscrowSettings { get; set; }
         public KafkaSettings KafkaSettings { get; set; }
+        public CloudinarySettings CloudinarySettings { get; set; }
     }
 
     public class IdentitySettings
@@ -42,5 +43,12 @@ namespace EskroAfrica.MarketplaceService.Common.Models
         public ProducerConfig ProducerConfig { get; set; }
         public ConsumerConfig ConsumerConfig { get; set; }
         public string CreateEscrowTopic { get; set; }
+    }
+
+    public class CloudinarySettings
+    {
+        public string CloudName { get; set; }
+        public string ApiKey { get; set; }
+        public string ApiSecret { get; set; }
     }
 }

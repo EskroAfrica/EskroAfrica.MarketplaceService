@@ -16,6 +16,8 @@ namespace EskroAfrica.MarketplaceService.Application
 
             CreateMap<SubCategoryRequest, SubCategory>();
             CreateMap<SubCategory, SubCategoryResponse>();
+
+            CreateMap<Delivery, DeliveryRequest>();
         }
     }
 }

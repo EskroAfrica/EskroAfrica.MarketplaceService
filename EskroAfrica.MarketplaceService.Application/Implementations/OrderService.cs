@@ -1,4 +1,5 @@
-﻿using EskroAfrica.MarketplaceService.Application.Interfaces;
+﻿using AutoMapper;
+using EskroAfrica.MarketplaceService.Application.Interfaces;
 using EskroAfrica.MarketplaceService.Common.DTOs.Paystack;
 using EskroAfrica.MarketplaceService.Common.DTOs.Requests;
 using EskroAfrica.MarketplaceService.Common.DTOs.Response;
@@ -15,15 +16,17 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IPaystackService _paystackService;
         private readonly IKafkaProducerService _kafkaProducerService;
+        private readonly IMapper _mapper;
 
         public OrderService(IUnitOfWork unitOfWork, AppSettings appSettings, IJwtTokenService jwtTokenService, IPaystackService paystackService,
-            IKafkaProducerService kafkaProducerService)
+            IKafkaProducerService kafkaProducerService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _appSettings = appSettings;
             _jwtTokenService = jwtTokenService;
             _paystackService = paystackService;
             _kafkaProducerService = kafkaProducerService;
+            _mapper = mapper;
         }
 
         public async Task<ApiResponse<InitiateOrderResponse>> InitiateOrder(InitiateOrderRequest request)
@@ -35,14 +38,12 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             if (product == null) return apiResponse.Failure("Product not found", ApiResponseCode.BadRequest);
             if(product.Status != ProductStatus.Available) return apiResponse.Failure("Product is not available", ApiResponseCode.BadRequest);
 
-            Delivery delivery = null;
+            decimal totalPayable = product.Price;
             if (request.DeliveryRequired)
             {
-                delivery = await _unitOfWork.Repository<Delivery>().GetAsync(d => d.Id == request.DeliveryId);
-                if (delivery == null) return apiResponse.Failure("Delivery details not found", ApiResponseCode.BadRequest);
+                if(request.DeliveryRequest == null) return apiResponse.Failure("Missing delivery details", ApiResponseCode.BadRequest);
+                totalPayable += product.Price + request.DeliveryRequest.Amount;
             }
-
-            decimal totalPayable = product.Price + delivery.Amount;
 
             // create order
             var order = new Order
@@ -56,9 +57,9 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 
             if(request.DeliveryRequired)
             {
-                delivery.OrderId = order.Id;
+                var delivery = _mapper.Map<Delivery>(request.DeliveryRequest);
+                _unitOfWork.Repository<Delivery>().Add(delivery);
             }
-            _unitOfWork.Repository<Delivery>().Update(delivery);
 
             // initiate payment
             var initiateResponse = await _paystackService.InitiateTransaction

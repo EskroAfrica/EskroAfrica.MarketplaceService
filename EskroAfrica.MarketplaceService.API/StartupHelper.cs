@@ -1,4 +1,5 @@
-﻿using EskroAfrica.MarketplaceService.Application;
+﻿using CloudinaryDotNet;
+using EskroAfrica.MarketplaceService.Application;
 using EskroAfrica.MarketplaceService.Application.Identity;
 using EskroAfrica.MarketplaceService.Application.Implementations;
 using EskroAfrica.MarketplaceService.Application.Interfaces;
@@ -6,6 +7,7 @@ using EskroAfrica.MarketplaceService.Common.Models;
 using EskroAfrica.MarketplaceService.Infrastructure.Data;
 using EskroAfrica.MarketplaceService.Infrastructure.Implementations;
 using Hangfire;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -67,6 +69,7 @@ namespace EskroAfrica.MarketplaceService.API
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ISubCategoryService, SubCategoryService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IDocumentService, DocumentService>();
 
             services.AddScoped<IHttpClientService, HttpClientService>();
             services.AddScoped<IPaystackService, PaystackService>();
@@ -74,6 +77,7 @@ namespace EskroAfrica.MarketplaceService.API
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton(new Cloudinary(new Account(appSettings.CloudinarySettings.CloudName, appSettings.CloudinarySettings.ApiKey, appSettings.CloudinarySettings.ApiSecret)));
         }
     }
 }
