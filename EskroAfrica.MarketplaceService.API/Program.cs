@@ -11,6 +11,8 @@ using Serilog;
  - add exception handler
  */
 
+// added comment
+
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration config = builder.Configuration;
 
