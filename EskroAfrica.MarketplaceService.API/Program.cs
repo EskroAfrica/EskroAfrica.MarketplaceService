@@ -13,6 +13,7 @@ using Serilog;
 
 // added comment
 // added another comment
+// one more comment
 
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration config = builder.Configuration;
