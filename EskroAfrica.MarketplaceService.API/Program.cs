@@ -18,10 +18,24 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration config = builder.Configuration;
 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.Console()
-    .WriteTo.Seq(builder.Configuration.GetValue<string>("AppSettings:LogSettings:LogUrl"))
-    .CreateLogger();
+bool writeToSeq = builder.Configuration.GetValue<bool>("AppSettings:LogSettings:WriteToSeq");
+bool writeToFile = builder.Configuration.GetValue<bool>("AppSettings:LogSettings:WriteToFile");
+
+if (writeToSeq)
+{
+    Log.Logger = new LoggerConfiguration()
+        .WriteTo.Console()
+        .WriteTo.Seq(builder.Configuration.GetValue<string>("AppSettings:LogSettings:LogUrl"))
+        .CreateLogger();
+}else if (writeToFile)
+{
+    Log.Logger = new LoggerConfiguration()
+        .WriteTo.Console()
+        .WriteTo.File("logs/log.txt",
+            rollingInterval: RollingInterval.Day,
+            rollOnFileSizeLimit: true)
+        .CreateLogger();
+}
 
 Log.Information("Starting up MarketplaceService");
 
@@ -36,6 +50,8 @@ try
 
     builder.Services.AddConfigurations(config);
 
+    builder.Services.AddCors();
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -49,7 +65,10 @@ try
         await Seeder.SeedAsync(dbContext);
     }
 
-
+    app.UseCors(options =>
+    {
+        options.AllowAnyOrigin();
+    });
     app.UseHttpsRedirection();
 
     app.UseHangfireDashboard();

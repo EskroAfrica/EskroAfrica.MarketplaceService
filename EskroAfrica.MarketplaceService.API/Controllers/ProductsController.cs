@@ -20,20 +20,21 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
         }
 
         [HttpGet]
-        //[AllowAnonymous]
         [ProducesResponseType(typeof(PaginatedApiResponse<List<ProductResponse>>), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetProductList([FromQuery] ProductRequestInput input)
             => CustomResponse(await _productService.GetProductList(input));
 
-        [HttpGet("/{id}")]
+        [HttpGet]
+        [Route(("/{id}"))]
         [AllowAnonymous]
         [ProducesResponseType(typeof(ApiResponse<ProductResponse>), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetProduct(Guid id)
             => CustomResponse(await _productService.GetProduct(id));
 
-        [HttpGet("/personal")]
+        [HttpGet]
+        [Route("/personal")]
         [ProducesResponseType(typeof(PaginatedApiResponse<List<ProductResponse>>), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetUserProducts()

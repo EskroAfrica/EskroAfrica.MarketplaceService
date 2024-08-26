@@ -1,11 +1,14 @@
 ﻿using Serilog;
 using Serilog.Events;
+using System.Diagnostics;
 using System.Text;
 
 namespace EskroAfrica.MarketplaceService.Common
 {
     public class MarketplaceServiceHelper
     {
+        public static Stopwatch Stopwatch = new Stopwatch();
+
         public static List<T> Paginate<T>(IQueryable<T> items, int pageNumber, int pageSize) where T : class
         {
             if(pageNumber < 1) pageNumber = 1;
@@ -24,6 +27,16 @@ namespace EskroAfrica.MarketplaceService.Common
             }
 
             return sb.ToString();
+        }
+
+        public static void StartTimer()
+        {
+            Stopwatch.Start();
+        }
+
+        public static void StopTimer()
+        {
+            Stopwatch.Stop();
         }
     }
 }
