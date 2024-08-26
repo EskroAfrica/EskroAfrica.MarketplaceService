@@ -58,11 +58,14 @@ try
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    using (var scope = app.Services.CreateScope())
+    if (builder.Configuration.GetValue<bool>("AppSettings:EnableSeeding"))
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<MarketplaceServiceDbContext>();
-        dbContext.Database.Migrate();
-        await Seeder.SeedAsync(dbContext);
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<MarketplaceServiceDbContext>();
+            dbContext.Database.Migrate();
+            await Seeder.SeedAsync(dbContext);
+        }
     }
 
     app.UseCors(options =>
