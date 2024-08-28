@@ -58,6 +58,15 @@ try
     app.UseSwagger();
     app.UseSwaggerUI();
 
+    if (builder.Configuration.GetValue<bool>("AppSettings:EnableMigration"))
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<MarketplaceServiceDbContext>();
+            dbContext.Database.Migrate();
+        }
+    }
+
     if (builder.Configuration.GetValue<bool>("AppSettings:EnableSeeding"))
     {
         using (var scope = app.Services.CreateScope())
