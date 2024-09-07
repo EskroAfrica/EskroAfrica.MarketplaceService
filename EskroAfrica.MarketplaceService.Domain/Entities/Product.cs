@@ -6,6 +6,7 @@ namespace EskroAfrica.MarketplaceService.Domain.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public string? AdditionalInformation { get; set; }
         public decimal Price { get; set; }
         public Guid SellerId { get; set; }
         public ProductCondition Condition { get; set; }
@@ -17,6 +18,7 @@ namespace EskroAfrica.MarketplaceService.Domain.Entities
         public Guid? SubCategoryId { get; set; }
         public string FeaturedImage { get; set; }
         public string Images { get; set; }
+        public int Quantity { get; set; }
 
         public Category Category { get; set; }
         public SubCategory SubCategory { get; set; }

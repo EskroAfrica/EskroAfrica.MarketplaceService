@@ -1,4 +1,7 @@
-﻿using Serilog;
+﻿using EskroAfrica.MarketplaceService.Common.DTOs.Requests;
+using EskroAfrica.MarketplaceService.Common.Enums;
+using EskroAfrica.MarketplaceService.Common.Models;
+using Serilog;
 using Serilog.Events;
 using System.Diagnostics;
 using System.Text;
@@ -37,6 +40,17 @@ namespace EskroAfrica.MarketplaceService.Common
         public static void StopTimer()
         {
             Stopwatch.Stop();
+        }
+
+        public static NotificationRequest CreateNotificationRequest(string subject, string body, NotificationType type, List<string> recipients)
+        {
+            return new NotificationRequest
+            {
+                Type = type,
+                Recipients = recipients,
+                Subject = subject,
+                Body = body
+            };
         }
     }
 }

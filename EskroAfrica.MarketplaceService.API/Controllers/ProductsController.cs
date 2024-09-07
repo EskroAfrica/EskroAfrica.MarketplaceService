@@ -19,6 +19,7 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
             _jwtTokenService = jwtTokenService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType(typeof(PaginatedApiResponse<List<ProductResponse>>), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]

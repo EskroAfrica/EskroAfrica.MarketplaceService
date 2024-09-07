@@ -36,7 +36,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             // get total amount (product, delivery)
             var product = await _unitOfWork.Repository<Product>().GetAsync(p => p.Id == request.ProductId);
             if (product == null) return apiResponse.Failure("Product not found", ApiResponseCode.BadRequest);
-            if(product.Status != ProductStatus.Available) return apiResponse.Failure("Product is not available", ApiResponseCode.BadRequest);
+            if(product.Quantity < request.Quantity) return apiResponse.Failure("Product is not available", ApiResponseCode.BadRequest);
 
             decimal totalPayable = product.Price;
             if (request.DeliveryRequired)
@@ -51,7 +51,8 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
                 ProductId = product.Id,
                 IdentityUserId = Guid.Parse(_jwtTokenService.IdentityUserId),
                 PickupMethod = request.DeliveryRequired ? PickupMethod.EskroDelivery : PickupMethod.SelfPickup,
-                Amount = totalPayable
+                Amount = totalPayable,
+                Quantity = request.Quantity
             };
             _unitOfWork.Repository<Order>().Add(order);
 
@@ -67,13 +68,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             if(initiateResponse == null || initiateResponse?.data == null || (!initiateResponse?.status ?? false))
                 return apiResponse.Failure("Could not initiate payment", ApiResponseCode.BadRequest);
 
-            // lock product and schedule unlock
-            product.Status = ProductStatus.Locked;
-            _unitOfWork.Repository<Product>().Update(product);
-
             await _unitOfWork.SaveChangesAsync();
-
-            // schedule unlock
 
             // return payment link
             var response = new InitiateOrderResponse
@@ -114,7 +109,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             order.OrderStatus = OrderStatus.Completed;
             _unitOfWork.Repository<Order>().Update(order);
 
-            product.Status = ProductStatus.Sold;
+            product.Quantity -= order.Quantity;
             _unitOfWork.Repository<Product>().Update(product);
 
             // save payment
@@ -144,7 +139,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
                 ProductId = product.Id,
                 PaymentId = payment.Id
             };
-            await _kafkaProducerService.ProduceAsync(_appSettings.KafkaSettings.CreateEscrowTopic, escrow);
+            await _kafkaProducerService.ProduceAsync(_appSettings.KafkaSettings.Topics.EscrowCreatedTopic, escrow);
 
             // return
             return apiResponse.Success("Successfully completed order");

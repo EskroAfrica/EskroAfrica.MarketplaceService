@@ -11,15 +11,15 @@
     public enum ProductCondition
     {
         BrandNew,
-        Used
+        ForeignUsed,
+        LocalUsed
     }
 
     public enum ProductStatus
     {
-        Available,
-        Locked,
-        Sold,
-        Unavailable
+        Pending,
+        Approved,
+        Rejected
     }
 
     public enum DeliveryStatus
@@ -42,5 +42,11 @@
         Initiated,
         Completed,
         Canceled
+    }
+
+    public enum NotificationType
+    {
+        Email,
+        Push
     }
 }

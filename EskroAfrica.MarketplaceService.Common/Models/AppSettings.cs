@@ -10,6 +10,7 @@ namespace EskroAfrica.MarketplaceService.Common.Models
         public EscrowSettings EscrowSettings { get; set; }
         public KafkaSettings KafkaSettings { get; set; }
         public CloudinarySettings CloudinarySettings { get; set; }
+        public NotificationSettings NotificationSettings { get; set; }
     }
 
     public class IdentitySettings
@@ -42,7 +43,13 @@ namespace EskroAfrica.MarketplaceService.Common.Models
     {
         public ProducerConfig ProducerConfig { get; set; }
         public ConsumerConfig ConsumerConfig { get; set; }
-        public string CreateEscrowTopic { get; set; }
+        public KafkaTopics Topics { get; set; }
+    }
+
+    public class KafkaTopics
+    {
+        public string EscrowCreatedTopic { get; set; }
+        public string NotificationTopic { get; set; }
     }
 
     public class CloudinarySettings
@@ -50,5 +57,12 @@ namespace EskroAfrica.MarketplaceService.Common.Models
         public string CloudName { get; set; }
         public string ApiKey { get; set; }
         public string ApiSecret { get; set; }
+    }
+
+    public class NotificationSettings
+    {
+        public List<string> AdminEmails { get; set; }
+        public string SellerAddProductEmailMessage { get; set; }
+        public string AdminAddProductEmailMessage { get; set; }
     }
 }

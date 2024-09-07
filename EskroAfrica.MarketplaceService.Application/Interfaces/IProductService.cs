@@ -7,5 +7,6 @@ namespace EskroAfrica.MarketplaceService.Application.Interfaces
     {
         Task<ApiResponse<ProductResponse>> GetProduct(Guid id);
         Task<PaginatedApiResponse<List<ProductResponse>>> GetProductList(ProductRequestInput input);
+        Task<ApiResponse> AddProduct(ProductRequest request);
     }
 }

@@ -21,6 +21,9 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Requests
         public Guid CategoryId { get; set; }
         public Guid? SubCategoryId { get; set; }
         public string FeaturedImage { get; set; }
+        public string AdditionalInformation { get; set; }
+        public int CurrentQuantity { get; set; }
+
         public List<string> Images { get; set; }
     }
 }

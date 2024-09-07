@@ -4,7 +4,10 @@ using EskroAfrica.MarketplaceService.Common;
 using EskroAfrica.MarketplaceService.Common.DTOs.Requests;
 using EskroAfrica.MarketplaceService.Common.DTOs.Response;
 using EskroAfrica.MarketplaceService.Common.Enums;
+using EskroAfrica.MarketplaceService.Common.Models;
 using EskroAfrica.MarketplaceService.Domain.Entities;
+using Hangfire;
+using System.Text.Encodings.Web;
 
 namespace EskroAfrica.MarketplaceService.Application.Implementations
 {
@@ -13,6 +16,9 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtTokenService _jwtTokenService;
         private readonly IMapper _mapper;
+        private readonly AppSettings _appSettings;
+        private readonly IKafkaProducerService _kafkaProducerService;
+        private readonly IGenericRepository<Product> _productRepository;
 
         // get products for timeline
         // get user's products
@@ -20,11 +26,15 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
         // add product
         // remove product from market
 
-        public ProductService(IUnitOfWork unitOfWork, IJwtTokenService jwtTokenService, IMapper mapper)
+        public ProductService(IUnitOfWork unitOfWork, IJwtTokenService jwtTokenService, IMapper mapper,
+            AppSettings appSettings, IKafkaProducerService kafkaProducerService)
         {
             _unitOfWork = unitOfWork;
+            _productRepository = _unitOfWork.Repository<Product>();
             _jwtTokenService = jwtTokenService;
             _mapper = mapper;
+            _appSettings = appSettings;
+            _kafkaProducerService = kafkaProducerService;
         }
 
         public async Task<PaginatedApiResponse<List<ProductResponse>>> GetProductList(ProductRequestInput input)
@@ -68,14 +78,36 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 
             var product = _mapper.Map<Product>(request);
             product.SellerId = Guid.Parse(_jwtTokenService.IdentityUserId);
-            product.Status = ProductStatus.Available;
+            product.Status = ProductStatus.Pending;
 
             _unitOfWork.Repository<Product>().Add(product);
             await _unitOfWork.SaveChangesAsync();
-
-            // notify user
+            
+            BackgroundJob.Enqueue(() => PostAddProductAction(product.Id, _jwtTokenService.Email));
 
             return apiResponse.Success("Successful");
+        }
+
+        public async Task PostAddProductAction(Guid productId, string sellerEmail)
+        {
+            var product = await _productRepository.GetAsync(p => p.Id == productId);
+            if (product == null) return;
+
+            var notifications = new List<NotificationRequest>();
+            // notify user
+            var userEmailNotification = MarketplaceServiceHelper.CreateNotificationRequest
+                ("New Product Added", _appSettings.NotificationSettings.SellerAddProductEmailMessage, 
+                NotificationType.Email, new List<string> { sellerEmail });
+
+            // notify admin of new pending product
+            var adminEmailNotification = MarketplaceServiceHelper.CreateNotificationRequest
+                ("New Product Added", _appSettings.NotificationSettings.AdminAddProductEmailMessage, 
+                NotificationType.Email, _appSettings.NotificationSettings.AdminEmails);
+
+            notifications.Add(userEmailNotification);
+            notifications.Add(adminEmailNotification);
+
+            await _kafkaProducerService.ProduceAsync(_appSettings.KafkaSettings.Topics.NotificationTopic, notifications);
         }
     }
 }
