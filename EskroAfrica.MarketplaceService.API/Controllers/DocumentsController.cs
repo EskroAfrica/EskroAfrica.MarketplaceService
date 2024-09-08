@@ -1,5 +1,6 @@
 ﻿using EskroAfrica.MarketplaceService.Application.Interfaces;
 using EskroAfrica.MarketplaceService.Common.DTOs.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EskroAfrica.MarketplaceService.API.Controllers
@@ -14,6 +15,7 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
         }
 
         [HttpPost("upload")]
+        [AllowAnonymous]
         public async Task<IActionResult> Upload(DocumentRequest request)
             => CustomResponse(await _documentService.Upload(request));
     }
