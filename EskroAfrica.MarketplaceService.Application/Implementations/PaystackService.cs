@@ -1,5 +1,6 @@
 ﻿using EskroAfrica.MarketplaceService.Application.Interfaces;
 using EskroAfrica.MarketplaceService.Common.DTOs.Paystack;
+using EskroAfrica.MarketplaceService.Common.DTOs.Response;
 using EskroAfrica.MarketplaceService.Common.Models;
 
 namespace EskroAfrica.MarketplaceService.Application.Implementations
@@ -37,6 +38,12 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
                 ($"{_baseUrl}/transaction/verify/{reference}", _paystackHeader);
 
             return response;
+        }
+
+        public async Task CreateWallet(CreateWalletRequest request)
+        {
+            var response = await _httpClientService.PostAsync<CreateWalletRequest, PaystackResponse>
+                (request, $"{_baseUrl}/dedicated_account/assign", _paystackHeader);
         }
     }
 }

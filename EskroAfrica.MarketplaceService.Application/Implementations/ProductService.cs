@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using EskroAfrica.MarketplaceService.Application.Interfaces;
 using EskroAfrica.MarketplaceService.Common;
 using EskroAfrica.MarketplaceService.Common.DTOs.Requests;
@@ -7,6 +8,7 @@ using EskroAfrica.MarketplaceService.Common.Enums;
 using EskroAfrica.MarketplaceService.Common.Models;
 using EskroAfrica.MarketplaceService.Domain.Entities;
 using Hangfire;
+using Newtonsoft.Json;
 using System.Text.Encodings.Web;
 
 namespace EskroAfrica.MarketplaceService.Application.Implementations
@@ -48,7 +50,9 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
                 && input.SellerId.HasValue ? x.SellerId == input.SellerId : true
                 && !string.IsNullOrEmpty(input.State) ? x.State.Contains(input.State) : true
                 && !string.IsNullOrEmpty(input.City) ? x.City.Contains(input.City) : true
-                && !string.IsNullOrEmpty(input.SearchTerm) ? x.Name.Contains(input.SearchTerm) : true);
+                && !string.IsNullOrEmpty(input.SearchTerm) ? x.Name.Contains(input.SearchTerm) : true
+                && x.ApprovalStatus == ApprovalStatus.Approved
+                && x.ActiveStatus == ActiveStatus.Active);
 
             // paginate
             var pageItems = MarketplaceServiceHelper.Paginate(products, input.PageNumber, input.PageSize);
@@ -72,20 +76,49 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             return apiResponse.Success(response, "Successful");
         }
 
-        public async Task<ApiResponse> AddProduct(ProductRequest request)
+        public async Task<ApiResponse<ProductResponse>> AddProduct(ProductRequest request)
         {
-            var apiResponse = new ApiResponse();
+            var apiResponse = new ApiResponse<ProductResponse>();
 
             var product = _mapper.Map<Product>(request);
             product.SellerId = Guid.Parse(_jwtTokenService.IdentityUserId);
-            product.Status = ProductStatus.Pending;
+            product.ApprovalStatus = ApprovalStatus.Pending;
 
             _unitOfWork.Repository<Product>().Add(product);
             await _unitOfWork.SaveChangesAsync();
             
             BackgroundJob.Enqueue(() => PostAddProductAction(product.Id, _jwtTokenService.Email));
 
-            return apiResponse.Success("Successful");
+            return apiResponse.Success(_mapper.Map<ProductResponse>(product), "Successful");
+        }
+
+        public async Task<ApiResponse<ProductResponse>> UpdateProduct(ProductUpdateRequest request)
+        {
+            var apiResponse = new ApiResponse<ProductResponse>();
+
+            var product = await _productRepository.GetAsync(x => x.Id == request.ProductId);
+            if (product == null) return apiResponse.Failure("Product not found");
+            if (product.SellerId != Guid.Parse(_jwtTokenService.IdentityUserId)) return apiResponse.Failure("You are not the owner of this product");
+
+            product.Name = request.Name;
+            product.Description = request.Description;
+            product.Price = request.Price;
+            product.Quantity = request.Quantity;
+            product.Condition = request.Condition;
+            product.State = request.State;
+            product.City = request.City;
+            product.AdditionalInformation = request.AdditionalInformation;
+            product.Address = request.Address;
+            product.CategoryId = request.CategoryId;
+            product.SubCategoryId = request.SubCategoryId;
+            product.FeaturedImage = request.FeaturedImage;
+            product.Images = JsonConvert.SerializeObject(request.Images);
+            product.ApprovalStatus = ApprovalStatus.Pending;
+
+            _productRepository.Update(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            return apiResponse.Success(_mapper.Map<ProductResponse>(product), "Successful");
         }
 
         public async Task PostAddProductAction(Guid productId, string sellerEmail)
@@ -108,6 +141,53 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             notifications.Add(adminEmailNotification);
 
             await _kafkaProducerService.ProduceAsync(_appSettings.KafkaSettings.Topics.NotificationTopic, notifications);
+        }
+
+        public async Task<ApiResponse> MarkProductActiveOrInactive(Guid id)
+        {
+            var apiResponse = new ApiResponse<ProductResponse>();
+
+            var product = await _productRepository.GetAsync(x => x.Id == id);
+            if (product == null) return apiResponse.Failure("Product not found");
+            if(product.SellerId != Guid.Parse(_jwtTokenService.IdentityUserId)) return apiResponse.Failure("You are not the owner of this product");
+
+            product.ActiveStatus = product.ActiveStatus == ActiveStatus.Active ? ActiveStatus.Inactive : ActiveStatus.Active;
+            _productRepository.Update(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            return apiResponse.Success("Success");
+        }
+
+        public async Task<ApiResponse> SetSale(ProductSaleRequest request)
+        {
+            var apiResponse = new ApiResponse<ProductResponse>();
+
+            var product = await _productRepository.GetAsync(x => x.Id == request.ProductId);
+            if (product == null) return apiResponse.Failure("Product not found");
+            if (product.SellerId != Guid.Parse(_jwtTokenService.IdentityUserId)) return apiResponse.Failure("You are not the owner of this product");
+
+            product.IsOnSale = true;
+            product.SaleStartDate = request.SaleStartDate;
+            product.SaleEndDate = request.SaleEndDate;
+
+            BackgroundJob.Schedule(() => EndSale(product.Id), product.SaleEndDate);
+
+            _productRepository.Update(product);
+            await _unitOfWork.SaveChangesAsync();
+            return apiResponse.Success("Success");
+        }
+
+        public async Task EndSale(Guid id)
+        {
+            var product = await _productRepository.GetAsync(x => x.Id == id);
+            if (product == null) return;
+
+            product.IsOnSale = false;
+            product.SaleStartDate = default;
+            product.SaleEndDate = default;
+
+            _productRepository.Update(product);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

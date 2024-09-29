@@ -20,5 +20,13 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
         [HttpPost("complete")]
         public async Task<IActionResult> CompleteOrder([FromBody] CompleteOrderRequest request)
             => CustomResponse(await _orderService.CompleteOrder(request));
+
+        [HttpGet("seller-orders")]
+        public async Task<IActionResult> GetSellerOrders(OrderRequestInput input)
+            => CustomResponse(await _orderService.GetSellerOrders(input));
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOrder(Guid id)
+            => CustomResponse(await (_orderService.GetOrder(id)));
     }
 }

@@ -7,5 +7,7 @@ namespace EskroAfrica.MarketplaceService.Application.Interfaces
     {
         Task<ApiResponse<InitiateOrderResponse>> InitiateOrder(InitiateOrderRequest request);
         Task<ApiResponse> CompleteOrder(CompleteOrderRequest request);
+        Task<PaginatedApiResponse<List<OrderResponse>>> GetSellerOrders(OrderRequestInput input);
+        Task<ApiResponse<OrderResponse>> GetOrder(Guid orderId);
     }
 }

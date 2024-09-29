@@ -13,7 +13,6 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Requests
         public string Description { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
-        public bool SellAsUnit { get; set; }
         public ProductCondition Condition { get; set; }
         public string State { get; set; }
         public string City { get; set; }
@@ -22,8 +21,12 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Requests
         public Guid? SubCategoryId { get; set; }
         public string FeaturedImage { get; set; }
         public string AdditionalInformation { get; set; }
-        public int CurrentQuantity { get; set; }
 
         public List<string> Images { get; set; }
+    }
+
+    public class ProductUpdateRequest : ProductRequest
+    {
+        public Guid ProductId { get; set; }
     }
 }

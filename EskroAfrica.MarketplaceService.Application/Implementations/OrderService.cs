@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using EskroAfrica.MarketplaceService.Application.Interfaces;
+using EskroAfrica.MarketplaceService.Common;
 using EskroAfrica.MarketplaceService.Common.DTOs.Paystack;
 using EskroAfrica.MarketplaceService.Common.DTOs.Requests;
 using EskroAfrica.MarketplaceService.Common.DTOs.Response;
 using EskroAfrica.MarketplaceService.Common.Enums;
 using EskroAfrica.MarketplaceService.Common.Models;
 using EskroAfrica.MarketplaceService.Domain.Entities;
+using static Confluent.Kafka.ConfigPropertyNames;
 
 namespace EskroAfrica.MarketplaceService.Application.Implementations
 {
@@ -17,6 +19,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
         private readonly IPaystackService _paystackService;
         private readonly IKafkaProducerService _kafkaProducerService;
         private readonly IMapper _mapper;
+        private readonly IGenericRepository<Order> _orderRepository;
 
         public OrderService(IUnitOfWork unitOfWork, AppSettings appSettings, IJwtTokenService jwtTokenService, IPaystackService paystackService,
             IKafkaProducerService kafkaProducerService, IMapper mapper)
@@ -27,6 +30,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             _paystackService = paystackService;
             _kafkaProducerService = kafkaProducerService;
             _mapper = mapper;
+            _orderRepository = _unitOfWork.Repository<Order>();
         }
 
         public async Task<ApiResponse<InitiateOrderResponse>> InitiateOrder(InitiateOrderRequest request)
@@ -49,7 +53,8 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             var order = new Order
             {
                 ProductId = product.Id,
-                IdentityUserId = Guid.Parse(_jwtTokenService.IdentityUserId),
+                BuyerId = Guid.Parse(_jwtTokenService.IdentityUserId),
+                SellerId = product.SellerId,
                 PickupMethod = request.DeliveryRequired ? PickupMethod.EskroDelivery : PickupMethod.SelfPickup,
                 Amount = totalPayable,
                 Quantity = request.Quantity
@@ -106,7 +111,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
                 return apiResponse.Failure("Payment amount is less than actual order amount", ApiResponseCode.BadRequest);
 
             // update order details, update product details
-            order.OrderStatus = OrderStatus.Completed;
+            order.Status = OrderStatus.Completed;
             _unitOfWork.Repository<Order>().Update(order);
 
             product.Quantity -= order.Quantity;
@@ -143,6 +148,27 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 
             // return
             return apiResponse.Success("Successfully completed order");
+        }
+
+        public async Task<PaginatedApiResponse<List<OrderResponse>>> GetSellerOrders(OrderRequestInput input)
+        {
+            var apiResponse = new PaginatedApiResponse<List<OrderResponse>>();
+            var orders = await _orderRepository.GetAllAsync(o => o.SellerId == Guid.Parse(_jwtTokenService.IdentityUserId), o => o.Product);
+
+            var pageItems = MarketplaceServiceHelper.Paginate(orders, input.PageNumber, input.PageSize);
+            int total = orders.Count();
+
+            var mappedItems = _mapper.Map<List<OrderResponse>>(pageItems);
+            return apiResponse.Success(mappedItems, "Successful", ApiResponseCode.Ok, total);
+        }
+
+        public async Task<ApiResponse<OrderResponse>> GetOrder(Guid orderId)
+        {
+            var apiResponse = new ApiResponse<OrderResponse>();
+            var order = await _orderRepository.GetAsync(o => o.Id == orderId, o => o.Product);
+            if (order == null) return apiResponse.Failure("Order not found");
+
+            return apiResponse.Success(_mapper.Map<OrderResponse>(order), "Success");
         }
     }
 }

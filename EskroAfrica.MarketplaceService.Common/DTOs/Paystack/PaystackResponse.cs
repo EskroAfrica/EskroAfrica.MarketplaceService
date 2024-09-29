@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EskroAfrica.MarketplaceService.Common.DTOs.Paystack
+﻿namespace EskroAfrica.MarketplaceService.Common.DTOs.Paystack
 {
-    public class PaystackResponse<T>
+    public class PaystackResponse
     {
         public bool status { get; set; }
         public string message { get; set; }
+    }
+
+    public class PaystackResponse<T> : PaystackResponse
+    {
         public T data { get; set; }
     }
 }

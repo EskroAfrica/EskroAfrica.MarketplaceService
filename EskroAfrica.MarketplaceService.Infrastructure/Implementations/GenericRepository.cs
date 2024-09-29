@@ -25,7 +25,7 @@ namespace EskroAfrica.MarketplaceService.Infrastructure.Implementations
 
         public async Task<T> GetAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
         {
-            IQueryable<T> query = _entityDbSet.AsQueryable();
+            IQueryable<T> query = _entityDbSet.AsQueryable().Where(x => !x.IsDeleted);
 
             if(includes != null)
             {
@@ -37,7 +37,7 @@ namespace EskroAfrica.MarketplaceService.Infrastructure.Implementations
 
         public async Task<IQueryable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, params Expression<Func<T, object>>[] includes)
         {
-            IQueryable<T> query = _entityDbSet.AsQueryable();
+            IQueryable<T> query = _entityDbSet.AsQueryable().Where(x => !x.IsDeleted);
 
             if (includes != null)
             {

@@ -52,11 +52,11 @@ namespace EskroAfrica.MarketplaceService.Infrastructure.Data
                         State = MarketplaceServiceHelper.GenerateString(15),
                         City = MarketplaceServiceHelper.GenerateString(15),
                         Address = MarketplaceServiceHelper.GenerateString(30),
-                        Status = (ProductStatus)new Random().Next(0, 4),
+                        ApprovalStatus = (ApprovalStatus)new Random().Next(0, 4),
                         CategoryId = categoryId,
                         SubCategoryId = subCategoryId,
-                        FeaturedImage = MarketplaceServiceHelper.GenerateString(30),
-                        Images = JsonConvert.SerializeObject(new List<string> { MarketplaceServiceHelper.GenerateString(30), MarketplaceServiceHelper.GenerateString(30) }),
+                        FeaturedImage = "https://res.cloudinary.com/dlwdwtqjf/image/upload/v1727009754/i3ikm63guiudxp41hnxw.jpg",
+                        Images = JsonConvert.SerializeObject(new List<string> { "https://res.cloudinary.com/dlwdwtqjf/image/upload/v1727009754/z2rb4z99pz5leifn559i.jpg", "https://res.cloudinary.com/dlwdwtqjf/image/upload/v1727009466/zp5q8iaia2gznpaqnfiu.jpg" }),
                     };
 
                     products.Add(product);

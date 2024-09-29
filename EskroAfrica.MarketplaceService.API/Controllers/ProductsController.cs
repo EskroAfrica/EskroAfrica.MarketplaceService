@@ -39,12 +39,24 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
         [ProducesResponseType(typeof(PaginatedApiResponse<List<ProductResponse>>), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetUserProducts()
-        {
-            var response = await _productService.GetProductList(new ProductRequestInput { SellerId = Guid.Parse(_jwtTokenService.IdentityUserId) });
-            return CustomResponse(response);
-        }
+            => CustomResponse(await _productService.GetProductList(new ProductRequestInput { SellerId = Guid.Parse(_jwtTokenService.IdentityUserId) }));
 
-        // add product
-        // mark product unavailable
+        [HttpPost]
+        [ProducesResponseType(typeof(ApiResponse<ProductResponse>), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        public async Task<IActionResult> AddProduct(ProductRequest request)
+            => CustomResponse(await _productService.AddProduct(request));
+
+        [HttpPost("mark-active-or-inactive/{id}")]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        public async Task<IActionResult> MarkProductActiveOrInactive(Guid id)
+            => CustomResponse(await _productService.MarkProductActiveOrInactive(id));
+
+        [HttpPut]
+        [ProducesResponseType(typeof(ApiResponse<ProductResponse>), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        public async Task<IActionResult> UpdateProduct(ProductUpdateRequest request)
+            => CustomResponse(await _productService.UpdateProduct(request));
     }
 }

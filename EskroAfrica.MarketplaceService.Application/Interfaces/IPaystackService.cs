@@ -11,5 +11,6 @@ namespace EskroAfrica.MarketplaceService.Application.Interfaces
     {
         Task<PaystackResponse<InitiateTransactionResponse>> InitiateTransaction(InitiateTransactionRequest request);
         Task<PaystackResponse<VerifyTransactionResponse>> VerifyTransaction(string reference);
+        Task CreateWallet(CreateWalletRequest request);
     }
 }

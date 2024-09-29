@@ -1,4 +1,6 @@
-﻿namespace EskroAfrica.MarketplaceService.Common.Enums
+﻿using System.ComponentModel;
+
+namespace EskroAfrica.MarketplaceService.Common.Enums
 {
     public enum ApiResponseCode
     {
@@ -10,16 +12,25 @@
 
     public enum ProductCondition
     {
+        [Description("Brand New")]
         BrandNew,
+        [Description("Foreign Used")]
         ForeignUsed,
+        [Description("Local Used")]
         LocalUsed
     }
 
-    public enum ProductStatus
+    public enum ApprovalStatus
     {
         Pending,
         Approved,
         Rejected
+    }
+
+    public enum ActiveStatus
+    {
+        Inactive,
+        Active
     }
 
     public enum DeliveryStatus
@@ -41,7 +52,9 @@
     {
         Initiated,
         Completed,
-        Canceled
+        Canceled,
+        Dispute,
+        Closed
     }
 
     public enum NotificationType
