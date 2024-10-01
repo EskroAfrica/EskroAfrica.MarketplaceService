@@ -51,8 +51,8 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
                 && !string.IsNullOrEmpty(input.State) ? x.State.Contains(input.State) : true
                 && !string.IsNullOrEmpty(input.City) ? x.City.Contains(input.City) : true
                 && !string.IsNullOrEmpty(input.SearchTerm) ? x.Name.Contains(input.SearchTerm) : true
-                && x.ApprovalStatus == ApprovalStatus.Approved
-                && x.ActiveStatus == ActiveStatus.Active);
+                && input.ApprovalStatus.HasValue ? x.ApprovalStatus == input.ApprovalStatus : x.ApprovalStatus == ApprovalStatus.Approved
+                && input.ActiveStatus.HasValue ? x.ActiveStatus == input.ActiveStatus : x.ActiveStatus == ActiveStatus.Active);
 
             // paginate
             var pageItems = MarketplaceServiceHelper.Paginate(products, input.PageNumber, input.PageSize);
@@ -114,6 +114,7 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
             product.FeaturedImage = request.FeaturedImage;
             product.Images = JsonConvert.SerializeObject(request.Images);
             product.ApprovalStatus = ApprovalStatus.Pending;
+            product.ActiveStatus = ActiveStatus.Inactive;
 
             _productRepository.Update(product);
             await _unitOfWork.SaveChangesAsync();
@@ -188,6 +189,43 @@ namespace EskroAfrica.MarketplaceService.Application.Implementations
 
             _productRepository.Update(product);
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<ApiResponse> ApproveProduct(Guid id)
+        {
+            var apiResponse = new ApiResponse<ProductResponse>();
+
+            var product = await _unitOfWork.Repository<Product>().GetAsync(x => x.Id == id);
+            if (product == null) return apiResponse.Failure("Product not found");
+
+            product.ApprovalStatus = ApprovalStatus.Approved;
+            product.ActiveStatus = ActiveStatus.Active;
+
+            _productRepository.Update(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            // notify user
+
+            return apiResponse.Success();
+        }
+
+        public async Task<ApiResponse> RejectProduct(Guid id, string rejectionReason)
+        {
+            var apiResponse = new ApiResponse<ProductResponse>();
+
+            var product = await _unitOfWork.Repository<Product>().GetAsync(x => x.Id == id);
+            if (product == null) return apiResponse.Failure("Product not found");
+
+            product.ApprovalStatus = ApprovalStatus.Rejected;
+            product.ActiveStatus = ActiveStatus.Inactive;
+            product.RejectionReason = rejectionReason;
+
+            _productRepository.Update(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            // notify user
+
+            return apiResponse.Success();
         }
     }
 }

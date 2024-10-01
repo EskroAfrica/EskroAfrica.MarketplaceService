@@ -8,7 +8,7 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Response
         public string UserMessage { get; set; }
         public ApiResponseCode ResponseCode { get; set; }
 
-        public ApiResponse Success(string message, ApiResponseCode responseCode = ApiResponseCode.Ok, string userMessage = null)
+        public ApiResponse Success(string message = "Successful", ApiResponseCode responseCode = ApiResponseCode.Ok, string userMessage = null)
         {
             Message = message;
             UserMessage = userMessage ?? message;
@@ -31,7 +31,7 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Response
     {
         public T Data { get; set; }
 
-        public ApiResponse<T> Success(T data, string message, ApiResponseCode responseCode = ApiResponseCode.Ok, string userMessage = null)
+        public ApiResponse<T> Success(T data, string message = "Successful", ApiResponseCode responseCode = ApiResponseCode.Ok, string userMessage = null)
         {
             Message = message;
             UserMessage = userMessage ?? message;
@@ -55,7 +55,7 @@ namespace EskroAfrica.MarketplaceService.Common.DTOs.Response
     {
         public int TotalCount { get; set; }
 
-        public PaginatedApiResponse<T> Success(T data, string message, ApiResponseCode responseCode = ApiResponseCode.Ok, int total = 0, string userMessage = null)
+        public PaginatedApiResponse<T> Success(T data, string message = "Successful", ApiResponseCode responseCode = ApiResponseCode.Ok, int total = 0, string userMessage = null)
         {
             Message = message;
             UserMessage = userMessage ?? message;
