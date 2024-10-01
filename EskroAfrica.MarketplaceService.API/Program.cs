@@ -2,6 +2,7 @@ using EskroAfrica.MarketplaceService.API;
 using EskroAfrica.MarketplaceService.Infrastructure.Data;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Converters;
 using Serilog;
 /*
  - add serilog
@@ -44,9 +45,17 @@ try
     // Add services to the container.
 
     builder.Services.AddControllers();
+        //.AddNewtonsoftJson(opts =>
+        //{
+        //    opts.SerializerSettings.Converters.Add(new StringEnumConverter());
+        //});
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(o =>
+    {
+        
+    });
+    builder.Services.AddSwaggerGenNewtonsoftSupport();
 
     builder.Services.AddConfigurations(config);
 

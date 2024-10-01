@@ -59,6 +59,12 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
         public async Task<IActionResult> UpdateProduct(ProductUpdateRequest request)
             => CustomResponse(await _productService.UpdateProduct(request));
 
+        [HttpPost("set-sale")]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        public async Task<IActionResult> SetSale(ProductSaleRequest request)
+            => CustomResponse(await _productService.SetSale(request));
+
         [HttpPost("approve/{id}")]
         [Authorize(Policy = "CanAccessBackOffice")]
         [ProducesResponseType(typeof(ApiResponse), 200)]

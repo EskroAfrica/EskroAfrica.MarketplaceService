@@ -12,5 +12,6 @@ namespace EskroAfrica.MarketplaceService.Application.Interfaces
         Task<ApiResponse<ProductResponse>> UpdateProduct(ProductUpdateRequest request);
         Task<ApiResponse> ApproveProduct(Guid id);
         Task<ApiResponse> RejectProduct(Guid id, string rejectionReason);
+        Task<ApiResponse> SetSale(ProductSaleRequest request);
     }
 }
