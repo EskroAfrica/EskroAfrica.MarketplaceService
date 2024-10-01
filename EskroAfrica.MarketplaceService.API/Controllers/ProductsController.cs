@@ -27,7 +27,7 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
             => CustomResponse(await _productService.GetProductList(input));
 
         [HttpGet]
-        [Route(("/{id}"))]
+        [Route(("{id}"))]
         [AllowAnonymous]
         [ProducesResponseType(typeof(ApiResponse<ProductResponse>), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
@@ -35,7 +35,7 @@ namespace EskroAfrica.MarketplaceService.API.Controllers
             => CustomResponse(await _productService.GetProduct(id));
 
         [HttpGet]
-        [Route("/personal")]
+        [Route("personal")]
         [ProducesResponseType(typeof(PaginatedApiResponse<List<ProductResponse>>), 200)]
         [ProducesResponseType(typeof(ApiResponse), 400)]
         public async Task<IActionResult> GetUserProducts()
